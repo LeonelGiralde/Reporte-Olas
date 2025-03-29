@@ -4,6 +4,7 @@ import DeleteModal from "./components/DeleteModal";
 import ChangePaswordModal from "./components/ChangePasword";
 import useModal from "../../hooks/useModal";
 import EditModal from "./components/EditModal";
+import ProfilePicModal from "./components/ProfilePicModal";
 
 export default function AccountPage() {
    
@@ -11,6 +12,7 @@ export default function AccountPage() {
     const [isOpenDeleteModal, openDeleteModal, closeDeleteModal]= useModal();
     const [isOpenChangePaswordModal, openChangePaswordModal, closeChangePaswordModal]= useModal();
     const [isOpenEditModal, openEditModal, closeEditModal]= useModal();
+    const [isOpenProfilePicModal, openProfilePicModal, closeProfilePicModal]= useModal();
   
     return (
         <>
@@ -20,11 +22,13 @@ export default function AccountPage() {
                         <img
                             src="/img/Profile-PNG-Photo.png"
                             alt="profile"
+                            onClick={openProfilePicModal}
                             style={{
                                 width: "200px",
                                 height: "200px",
                                 borderRadius: "50%",
                                 objectFit: "cover",
+                                cursor:"pointer"
                             }}
                         />
                     </Col>
@@ -79,6 +83,13 @@ export default function AccountPage() {
                 <EditModal 
                 isOpen={isOpenEditModal} 
                 close={closeEditModal} 
+                user={user}
+                />
+            )}
+            {isOpenProfilePicModal && (
+                <ProfilePicModal 
+                isOpen={isOpenProfilePicModal} 
+                close={closeProfilePicModal} 
                 user={user}
                 />
             )}
