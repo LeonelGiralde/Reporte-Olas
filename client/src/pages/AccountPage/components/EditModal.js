@@ -33,7 +33,7 @@ export default function EditModal({ isOpen, close, user }) {
             email:user.email,
             role:user.role
         });
-    },[])
+    },[reset, user])
 
     return (
         <Modal show={isOpen} onHide={close} centered>
