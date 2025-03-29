@@ -78,7 +78,8 @@ export default function AccountPage() {
             {isOpenEditModal && (
                 <EditModal 
                 isOpen={isOpenEditModal} 
-                closeEditModal={closeEditModal} 
+                close={closeEditModal} 
+                user={user}
                 />
             )}
         </>

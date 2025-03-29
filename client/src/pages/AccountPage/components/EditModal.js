@@ -2,21 +2,41 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import editAccoutnResolver from "../../../validations/editAccoutnResolver"; // Asegúrate de importar correctamente
 import useAuth  from "../../../auth/useAuth";
+import roles from "../../../helpers/roles";
+import { useEffect } from "react";
 
-export default function ChangePassword({ isOpen, closeEditModal }) {
-    const {updateUser}= useAuth(); // Asegúrate de importar el contexto de autenticación correctamente
-    const { register, handleSubmit, formState: { errors } } = useForm({
+
+export default function EditModal({ isOpen, close, user }) {
+   
+    const {updateUser, hasRole}= useAuth(); 
+    const { register, handleSubmit, formState: { errors, dirtyFields }, reset} = useForm({
         resolver: editAccoutnResolver,
     });
+    const isDirty = !!Object.keys(dirtyFields).length;
 
     const onSubmit = (formData) => {
         
-        alert("Cambiando contraseña");
-        updateUser(formData);
+        if(!isDirty) return;
+        updateUser(formData)
+        close()
       };
+       
+    useEffect(()=>{
+        if(!isOpen){
+            reset()
+        }
+    },[isOpen, reset])
+
+    useEffect(()=>{
+        if(user)reset({
+            name:user.name,
+            email:user.email,
+            role:user.role
+        });
+    },[])
 
     return (
-        <Modal show={isOpen} onHide={closeEditModal} centered>
+        <Modal show={isOpen} onHide={close} centered>
             <Modal.Header closeButton>
                 <Modal.Title>Editar mi cuenta</Modal.Title>
             </Modal.Header>
@@ -51,24 +71,28 @@ export default function ChangePassword({ isOpen, closeEditModal }) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     
-                   {/*----- Cambiar rol------------
+                   
                     <Form.Group className="mb-3">
                         <Form.Label>Rol</Form.Label>
-                        <Form.Control as="select" {...register("role")}>
-                            <option key={role} value="user">Usuario</option>
-                            <option key={role} value="admin">Administrador</option>
+                        <Form.Control 
+                        as="select" 
+                        disabled={!hasRole("admin")}
+                        {...register("role")}>
+                            
+                            {Object.keys(roles).map((role) => (
+                                    <option key={role}>{role}</option>
+                                ))}
                         </Form.Control>
                         
                         <Form.Control.Feedback type="invalid">
                             {errors.email?.message}
                         </Form.Control.Feedback>
-                    </Form.Group>*/ }
-
+                    </Form.Group>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={closeEditModal}>
+                        <Button variant="secondary" onClick={close}>
                             Cancelar
                         </Button>
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit" onClick={handleSubmit(onSubmit)} disabled={!isDirty}>
                             Actualizar mi cuenta
                         </Button>
                     </Modal.Footer>
